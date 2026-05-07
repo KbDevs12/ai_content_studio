@@ -80,13 +80,6 @@ export const metadata: Metadata = {
 
   // ── App / Theme ─────────────────────────────────────────────────────────
   applicationName: SITE_NAME,
-  themeColor: "#0a0a0f",
-  colorScheme: "dark",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -104,8 +97,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${syne.variable} ${spaceGrotesk.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="id"
+      className={`${syne.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="my-4">{children}</body>
     </html>
   );
 }

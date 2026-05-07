@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import {
+  DiscordLogo,
+  EnvelopeSimple,
+  Lock,
+  Sparkle,
+  ArrowRight,
+} from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -10,6 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
   const supabase = createClient();
 
@@ -18,13 +26,14 @@ export default function LoginPage() {
       provider: "discord",
       options: {
         scopes: "identify email",
-        redirectTo: `${location.origin}/api/callback`,
+        redirectTo: `${window.location.origin}/api/callback`,
       },
     });
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setLoading(true);
     setError(null);
 
@@ -36,106 +45,154 @@ export default function LoginPage() {
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      router.push("/");
-      router.refresh();
+      return;
     }
+
+    router.push("/");
+    router.refresh();
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
-      {/* Background glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c8ff00]/5 rounded-full blur-[120px]" />
+    <div className="min-h-screen bg-[#050507] relative overflow-hidden flex items-center justify-center px-4">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#c8ff00]/10 blur-[140px] rounded-full" />
+
+        <div className="absolute bottom-[-200px] right-[-100px] w-[400px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full" />
       </div>
 
-      <div className="w-full max-w-md relative">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-12 h-12 rounded-xl bg-[#c8ff00] flex items-center justify-center mb-4">
-            <span
-              className="text-black font-black text-lg"
+      {/* Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md">
+        <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+          {/* Logo */}
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-16 h-16 rounded-2xl bg-[#c8ff00] flex items-center justify-center shadow-[0_0_40px_rgba(200,255,0,0.35)]">
+              <Sparkle size={30} weight="fill" className="text-black" />
+            </div>
+
+            <h1
+              className="mt-5 text-3xl font-bold text-white tracking-tight"
               style={{ fontFamily: "var(--font-syne)" }}
             >
-              AI
-            </span>
-          </div>
-          <h1
-            className="text-2xl font-bold text-white"
-            style={{ fontFamily: "var(--font-syne)" }}
-          >
-            Masuk ke Content Studio
-          </h1>
-          <p className="text-white/40 text-sm mt-1">
-            Lanjutkan sesi kreatif kamu
-          </p>
-        </div>
+              Content Studio
+            </h1>
 
-        {/* Card */}
-        <div className="bg-[#111118] border border-white/8 rounded-2xl p-8">
+            <p className="text-white/45 text-sm mt-2 leading-relaxed max-w-xs">
+              Masuk dan lanjutkan workflow AI content creation kamu.
+            </p>
+          </div>
+
+          {/* Error */}
           {error && (
-            <div className="mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <div className="mb-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* Email */}
             <div>
-              <label className="block text-xs text-white/50 mb-2 font-medium tracking-wider uppercase">
+              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
                 Email
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="kamu@example.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#c8ff00]/50 focus:bg-white/8 transition-all"
-              />
+
+              <div className="relative">
+                <EnvelopeSimple
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                />
+
+                <input
+                  type="email"
+                  placeholder="kamu@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-4 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:border-[#c8ff00]/50 focus:bg-white/[0.06]"
+                />
+              </div>
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs text-white/50 mb-2 font-medium tracking-wider uppercase">
+              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#c8ff00]/50 focus:bg-white/8 transition-all"
-              />
+
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                />
+
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-4 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:border-[#c8ff00]/50 focus:bg-white/[0.06]"
+                />
+              </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#c8ff00] text-black font-bold py-3 rounded-xl text-sm hover:bg-[#d4ff33] active:scale-[0.98] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#c8ff00] py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.01] hover:bg-[#d7ff4d] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Masuk..." : "Masuk"}
+
+              {!loading && (
+                <ArrowRight
+                  size={18}
+                  weight="bold"
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              )}
             </button>
           </form>
 
-          <div className="mt-6">
-            <button
-              onClick={loginWithDiscord}
-              className="w-full bg-[#5865F2] text-white font-bold py-3 rounded-xl text-sm hover:bg-[#4752C4] active:scale-[0.98] transition-all duration-150"
-            >
-              Masuk dengan Discord
-            </button>
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10" />
+            </div>
+
+            <div className="relative flex justify-center">
+              <span className="bg-[#0b0b10] px-4 text-xs uppercase tracking-[0.2em] text-white/30">
+                atau
+              </span>
+            </div>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-white/40 text-sm">
-              Belum punya akun?{" "}
-              <Link
-                href="/auth/register"
-                className="text-[#c8ff00] hover:underline font-medium"
-              >
-                Daftar gratis
-              </Link>
-            </p>
+          {/* Discord */}
+          <button
+            onClick={loginWithDiscord}
+            className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-[#5865F2]/30 bg-[#5865F2]/15 py-3.5 text-sm font-semibold text-white transition-all hover:border-[#5865F2]/50 hover:bg-[#5865F2]/25"
+          >
+            <DiscordLogo
+              size={22}
+              weight="fill"
+              className="transition-transform group-hover:scale-110"
+            />
+            Masuk dengan Discord
+          </button>
+
+          {/* Footer */}
+          <div className="mt-8 text-center text-sm text-white/35">
+            Belum punya akun?{" "}
+            <Link
+              href="/auth/register"
+              className="font-medium text-[#c8ff00] hover:text-[#d7ff4d]"
+            >
+              Daftar gratis
+            </Link>
           </div>
         </div>
       </div>
