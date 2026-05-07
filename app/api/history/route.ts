@@ -11,7 +11,14 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Unauthorized",
+        data: [],
+      },
+      { status: 401 },
+    );
   }
 
   const { data, error } = await supabase
@@ -22,10 +29,31 @@ export async function GET() {
     .limit(50);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message,
+        data: [],
+      },
+      { status: 500 },
+    );
   }
 
-  return NextResponse.json({ data });
+  // Handle empty history
+  if (!data || data.length === 0) {
+    return NextResponse.json({
+      success: true,
+      empty: true,
+      message: "No history found",
+      data: [],
+    });
+  }
+
+  return NextResponse.json({
+    success: true,
+    empty: false,
+    data,
+  });
 }
 
 // POST /api/history — save a new history item

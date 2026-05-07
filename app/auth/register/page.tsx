@@ -2,20 +2,28 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  Sparkle,
+  EnvelopeSimple,
+  Lock,
+  ArrowRight,
+  CheckCircle,
+} from "@phosphor-icons/react";
 
 export default function RegisterPage() {
+  const supabase = createClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password.length < 6) {
       setError("Password minimal 6 karakter.");
       return;
@@ -27,42 +35,58 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
-      },
     });
 
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      setSuccess(true);
+      return;
     }
+
+    setSuccess(true);
+    setLoading(false);
   };
 
+  // Success State
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
-        <div className="w-full max-w-md text-center">
-          <div className="w-16 h-16 rounded-full bg-[#c8ff00]/10 border border-[#c8ff00]/30 flex items-center justify-center mx-auto mb-6">
-            <span className="text-[#c8ff00] text-2xl">✓</span>
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050507] px-4">
+        {/* Glow */}
+        <div className="absolute top-[-150px] left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[#c8ff00]/10 blur-[140px]" />
+
+        {/* Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+        <div className="relative z-10 w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center backdrop-blur-2xl">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#c8ff00]/10 border border-[#c8ff00]/20">
+            <CheckCircle size={40} weight="fill" className="text-[#c8ff00]" />
           </div>
-          <h2
-            className="text-xl font-bold text-white mb-2"
+
+          <h1
+            className="text-3xl font-bold text-white"
             style={{ fontFamily: "var(--font-syne)" }}
           >
-            Cek email kamu!
-          </h2>
-          <p className="text-white/50 text-sm mb-6">
-            Kami mengirim link konfirmasi ke{" "}
-            <span className="text-white/80">{email}</span>. Klik link tersebut
-            untuk mengaktifkan akun.
+            Check Your Email
+          </h1>
+
+          <p className="mt-4 text-sm leading-relaxed text-white/45">
+            Kami sudah mengirim link verifikasi ke:
           </p>
+
+          <p className="mt-2 break-all text-sm font-medium text-white">
+            {email}
+          </p>
+
+          <p className="mt-6 text-sm leading-relaxed text-white/35">
+            Klik link verifikasi di email untuk mengaktifkan akun kamu.
+          </p>
+
           <Link
             href="/auth/login"
-            className="text-[#c8ff00] text-sm hover:underline"
+            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-[#c8ff00] px-5 py-3 text-sm font-bold text-black transition-all hover:scale-[1.02] hover:bg-[#d7ff4d]"
           >
-            ← Kembali ke login
+            Kembali ke Login
+            <ArrowRight size={18} weight="bold" />
           </Link>
         </div>
       </div>
@@ -70,92 +94,127 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c8ff00]/5 rounded-full blur-[120px]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050507] px-4">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-[-150px] left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[#c8ff00]/10 blur-[140px]" />
+
+        <div className="absolute bottom-[-200px] right-[-100px] h-[400px] w-[400px] rounded-full bg-indigo-500/10 blur-[120px]" />
       </div>
 
-      <div className="w-full max-w-md relative">
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-12 h-12 rounded-xl bg-[#c8ff00] flex items-center justify-center mb-4">
-            <span
-              className="text-black font-black text-lg"
+      {/* Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-2xl backdrop-blur-2xl">
+          {/* Header */}
+          <div className="mb-8 flex flex-col items-center text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#c8ff00] shadow-[0_0_40px_rgba(200,255,0,0.35)]">
+              <Sparkle size={30} weight="fill" className="text-black" />
+            </div>
+
+            <h1
+              className="mt-5 text-3xl font-bold tracking-tight text-white"
               style={{ fontFamily: "var(--font-syne)" }}
             >
-              AI
-            </span>
-          </div>
-          <h1
-            className="text-2xl font-bold text-white"
-            style={{ fontFamily: "var(--font-syne)" }}
-          >
-            Buat Akun Gratis
-          </h1>
-          <p className="text-white/40 text-sm mt-1">
-            Mulai generate konten AI sekarang
-          </p>
-        </div>
+              Create Account
+            </h1>
 
-        <div className="bg-[#111118] border border-white/8 rounded-2xl p-8">
+            <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/45">
+              Mulai workflow AI content creation kamu sekarang.
+            </p>
+          </div>
+
+          {/* Error */}
           {error && (
-            <div className="mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <div className="mb-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-5">
+          {/* Form */}
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* Email */}
             <div>
-              <label className="block text-xs text-white/50 mb-2 font-medium tracking-wider uppercase">
+              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
                 Email
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="kamu@example.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#c8ff00]/50 transition-all"
-              />
+
+              <div className="relative">
+                <EnvelopeSimple
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                />
+
+                <input
+                  type="email"
+                  placeholder="kamu@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-4 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:border-[#c8ff00]/50 focus:bg-white/[0.06]"
+                />
+              </div>
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs text-white/50 mb-2 font-medium tracking-wider uppercase">
+              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/40">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Min. 6 karakter"
-                minLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#c8ff00]/50 transition-all"
-              />
+
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+                />
+
+                <input
+                  type="password"
+                  placeholder="Minimal 6 karakter"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  minLength={6}
+                  required
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-4 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:border-[#c8ff00]/50 focus:bg-white/[0.06]"
+                />
+              </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#c8ff00] text-black font-bold py-3 rounded-xl text-sm hover:bg-[#d4ff33] active:scale-[0.98] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#c8ff00] py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.01] hover:bg-[#d7ff4d] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Membuat akun..." : "Daftar Sekarang"}
+              {loading ? "Creating Account..." : "Create Account"}
+
+              {!loading && (
+                <ArrowRight
+                  size={18}
+                  weight="bold"
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              )}
             </button>
           </form>
 
-          <p className="mt-4 text-white/30 text-xs text-center">
-            Dengan mendaftar, kamu menyetujui ketentuan penggunaan kami.
+          {/* Terms */}
+          <p className="mt-5 text-center text-xs leading-relaxed text-white/25">
+            Dengan membuat akun, kamu menyetujui Terms of Service dan Privacy
+            Policy kami.
           </p>
 
-          <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-white/40 text-sm">
-              Sudah punya akun?{" "}
-              <Link
-                href="/auth/login"
-                className="text-[#c8ff00] hover:underline font-medium"
-              >
-                Masuk
-              </Link>
-            </p>
+          {/* Footer */}
+          <div className="mt-6 border-t border-white/5 pt-6 text-center text-sm text-white/35">
+            Sudah punya akun?{" "}
+            <Link
+              href="/auth/login"
+              className="font-medium text-[#c8ff00] hover:text-[#d7ff4d]"
+            >
+              Login
+            </Link>
           </div>
         </div>
       </div>
