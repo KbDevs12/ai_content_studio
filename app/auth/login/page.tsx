@@ -13,6 +13,16 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  const loginWithDiscord = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        scopes: "identify email",
+        redirectTo: `${location.origin}/api/callback`,
+      },
+    });
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -106,6 +116,15 @@ export default function LoginPage() {
               {loading ? "Masuk..." : "Masuk"}
             </button>
           </form>
+
+          <div className="mt-6">
+            <button
+              onClick={loginWithDiscord}
+              className="w-full bg-[#5865F2] text-white font-bold py-3 rounded-xl text-sm hover:bg-[#4752C4] active:scale-[0.98] transition-all duration-150"
+            >
+              Masuk dengan Discord
+            </button>
+          </div>
 
           <div className="mt-6 pt-6 border-t border-white/5 text-center">
             <p className="text-white/40 text-sm">
