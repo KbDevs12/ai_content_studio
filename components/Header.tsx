@@ -47,7 +47,7 @@ export function Header() {
               className="text-base font-bold leading-tight"
               style={{ fontFamily: "var(--font-syne)" }}
             >
-              Content Studio
+              Nulisin
             </h1>
             <p className="text-[10px] text-white/30 leading-none">
               Powered by OpenRouter
