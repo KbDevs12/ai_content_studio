@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ContentForm } from "@/components/ContentForm";
 import { OutputPanel } from "@/components/OutputPanel";
 import { HistoryPanel } from "@/components/HistoryPanel";
 import { Header } from "@/components/Header";
-import { HistoryItem } from "@/types";
+import { HistoryItem, normalizeHistoryItem } from "@/types";
 
 export default function Home() {
   const [output, setOutput] = useState("");
@@ -25,22 +25,41 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
+  // ── Load history from Supabase on mount ─────────────────────────────────
+  const fetchHistory = useCallback(async () => {
     try {
-      const saved = localStorage.getItem("content-history");
-      if (saved) setHistory(JSON.parse(saved));
+      const res = await fetch("/api/history");
+      if (res.ok) {
+        const { data } = await res.json();
+        setHistory((data ?? []).map(normalizeHistoryItem));
+      }
     } catch {
-      localStorage.removeItem("content-history");
+      // silently fail — history just shows empty
     }
   }, []);
 
-  const saveToHistory = (item: HistoryItem) => {
-    setHistory((prev) => {
-      const updated = [item, ...prev].slice(0, 20);
-      localStorage.setItem("content-history", JSON.stringify(updated));
-      return updated;
-    });
+  useEffect(() => {
+    setMounted(true);
+    fetchHistory();
+  }, [fetchHistory]);
+
+  // ── Save to Supabase ─────────────────────────────────────────────────────
+  const saveToHistory = async (item: Omit<HistoryItem, "id" | "createdAt">) => {
+    try {
+      const res = await fetch("/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item),
+      });
+      if (res.ok) {
+        const { data } = await res.json();
+        setHistory((prev) =>
+          [normalizeHistoryItem(data), ...prev].slice(0, 50),
+        );
+      }
+    } catch {
+      // silently fail
+    }
   };
 
   const handleGenerate = async (params: {
@@ -94,39 +113,30 @@ export default function Home() {
 
           try {
             const parsed = JSON.parse(raw);
-
             if (parsed.error) {
               setError(parsed.error);
               return;
             }
-
-            if (parsed._model) {
-              setActiveModel(parsed._model);
-            }
-
-            if (parsed._fallback) {
+            if (parsed._model) setActiveModel(parsed._model);
+            if (parsed._fallback)
               setFallbackModels((prev) => [...prev, parsed._fallback]);
-            }
-
             if (parsed.text) {
               fullText += parsed.text;
               setOutput(fullText);
             }
           } catch {
-            // skip malformed chunk
+            /* skip malformed chunk */
           }
         }
       }
 
       if (fullText) {
-        saveToHistory({
-          id: Date.now().toString(),
+        await saveToHistory({
           topic: params.topic,
           contentType: params.contentType,
           tone: params.tone,
           language: params.language,
           output: fullText,
-          createdAt: new Date().toISOString(),
         });
       }
     } catch (err: any) {
@@ -156,11 +166,12 @@ export default function Home() {
     setActiveTab("generate");
   };
 
-  const handleClearHistory = () => {
+  const handleClearHistory = async () => {
+    await fetch("/api/history", { method: "DELETE" });
     setHistory([]);
-    localStorage.removeItem("content-history");
   };
 
+  // ── Skeleton while mounting ──────────────────────────────────────────────
   if (!mounted) {
     return (
       <main className="min-h-screen bg-[#0a0a0f] text-white">
