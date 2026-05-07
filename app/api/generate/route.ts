@@ -12,12 +12,12 @@ const client = new OpenAI({
 // Fallback chain: try each model in order until one works
 const FREE_MODELS = [
   "google/gemma-4-26b-a4b-it:free",
-  "tencent/hy3-preview:free",
-  "meta-llama/llama-4-scout:free",
-  "google/gemma-3-27b-it:free",
-  "mistralai/mistral-7b-instruct:free",
-  "qwen/qwen3-8b:free",
-  "deepseek/deepseek-r1-0528:free",
+  "poolside/laguna-xs.2:free",
+  "poolside/laguna-m.1:free",
+  "google/gemma-4-31b-it:free",
+  "liquid/lfm-2.5-1.2b-thinking:free",
+  "qwen/qwen3-next-80b-a3b-instruct:free",
+  "openai/gpt-oss-120b:free",
 ];
 
 const CONTENT_TYPE_PROMPTS: Record<string, string> = {
