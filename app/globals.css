@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #c8ff00;
+  --accent-dim: #a8d900;
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body), sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 255, 0, 0.3);
+}
+
+/* Markdown output styles */
+.prose-output h1 { font-size: 1.6rem; font-weight: 700; margin: 1.2rem 0 0.6rem; font-family: var(--font-syne); color: #fff; }
+.prose-output h2 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem; font-family: var(--font-syne); color: #eee; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.3rem; }
+.prose-output h3 { font-size: 1.05rem; font-weight: 600; margin: 0.8rem 0 0.4rem; font-family: var(--font-syne); color: #ddd; }
+.prose-output p { margin: 0.6rem 0; line-height: 1.75; color: rgba(255,255,255,0.88); }
+.prose-output ul, .prose-output ol { margin: 0.6rem 0 0.6rem 1.4rem; }
+.prose-output li { margin: 0.3rem 0; line-height: 1.65; color: rgba(255,255,255,0.85); }
+.prose-output ul li { list-style-type: disc; }
+.prose-output ol li { list-style-type: decimal; }
+.prose-output strong { color: #c8ff00; font-weight: 600; }
+.prose-output em { color: rgba(200,255,0,0.7); font-style: italic; }
+.prose-output code { background: rgba(200,255,0,0.1); color: #c8ff00; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.85em; }
+.prose-output blockquote { border-left: 3px solid #c8ff00; padding-left: 1rem; margin: 0.8rem 0; color: rgba(255,255,255,0.6); font-style: italic; }
+.prose-output hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 1rem 0; }
+
+/* Blink cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink::after {
+  content: "▋";
+  color: #c8ff00;
+  animation: blink 0.8s step-end infinite;
+  margin-left: 2px;
+}
+
+/* Shimmer animation for loading */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(200,255,0,0.05) 25%, rgba(200,255,0,0.15) 50%, rgba(200,255,0,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeSlideIn 0.3s ease forwards;
+}
+
+/* Pulse dot */
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+.pulse-dot {
+  animation: pulseDot 1s ease-in-out infinite;
+}
