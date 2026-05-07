@@ -11,7 +11,7 @@ const client = new OpenAI({
 
 // Fallback chain: try each model in order until one works
 const FREE_MODELS = [
-  "inclusionai/ling-2.6-1t:free",
+  "tencent/hy3-preview:free",
   "meta-llama/llama-4-maverick:free",
   "meta-llama/llama-4-scout:free",
   "google/gemma-3-27b-it:free",
