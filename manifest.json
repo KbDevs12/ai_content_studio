@@ -1,6 +1,6 @@
 {
-  "name": "AI Content Studio",
-  "short_name": "AI Studio",
+  "name": "Nulisin - AI Content Studio",
+  "short_name": "Nulisin",
   "description": "Generate konten berkualitas tinggi dengan AI",
   "start_url": "/",
   "display": "standalone",
