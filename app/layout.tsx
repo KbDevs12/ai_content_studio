@@ -14,7 +14,7 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://yourdomain.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nulisin.zone.id";
 const SITE_NAME = "AI Content Studio";
 const SITE_DESCRIPTION =
   "Generate konten berkualitas tinggi dengan AI. Blog, email, social media, dan lebih banyak lagi — gratis, cepat, tanpa batas kreativitas.";
