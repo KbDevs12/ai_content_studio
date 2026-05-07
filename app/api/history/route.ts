@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-// GET /api/history — fetch user's history from Supabase
+// GET /api/histories — fetch user's histories from Supabase
 export async function GET() {
   const supabase = await createServerSupabaseClient();
 
@@ -22,7 +22,7 @@ export async function GET() {
   }
 
   const { data, error } = await supabase
-    .from("history")
+    .from("histories")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
@@ -39,12 +39,12 @@ export async function GET() {
     );
   }
 
-  // Handle empty history
+  // Handle empty histories
   if (!data || data.length === 0) {
     return NextResponse.json({
       success: true,
       empty: true,
-      message: "No history found",
+      message: "No histories found",
       data: [],
     });
   }
@@ -56,7 +56,7 @@ export async function GET() {
   });
 }
 
-// POST /api/history — save a new history item
+// POST /api/histories — save a new histories item
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
   }
 
   const { data, error } = await supabase
-    .from("history")
+    .from("histories")
     .insert({
       user_id: user.id,
       topic,
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ data }, { status: 201 });
 }
 
-// DELETE /api/history — clear all history for user
+// DELETE /api/histories — clear all histories for user
 export async function DELETE() {
   const supabase = await createServerSupabaseClient();
 
@@ -113,7 +113,7 @@ export async function DELETE() {
   }
 
   const { error } = await supabase
-    .from("history")
+    .from("histories")
     .delete()
     .eq("user_id", user.id);
 
